@@ -11,7 +11,7 @@ class CountEncoder():
         self.preprocessor = None
 
     def fit(self, X, y=None):
-        self.preprocessor = CE(handle_unknown=0, return_df=False, cols=X.columns)
+        self.preprocessor = CE(handle_unknown=0, cols=X.columns)
         self.preprocessor.fit(X)
         return self
 
@@ -20,6 +20,6 @@ class CountEncoder():
             json.dump(self.preprocessor.transform(X).tolist(), f)
             print(self.preprocessor.transform(X).shape)
 
-        return pd.DataFrame(data=self.preprocessor.transform(X), columns=X.columns)
+        return self.preprocessor.transform(X)
 
 Registry.add_component_to_registry(CATEGORICAL_ENCODING, [], CountEncoder)
