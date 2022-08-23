@@ -16,10 +16,6 @@ class CountEncoder():
         return self
 
     def transform(self, X):
-        with open("data.json", "w") as f:
-            json.dump(self.preprocessor.transform(X).tolist(), f)
-            print(self.preprocessor.transform(X).shape)
-
         return self.preprocessor.transform(X)
 
 Registry.add_component_to_registry(CATEGORICAL_ENCODING, [], CountEncoder)
