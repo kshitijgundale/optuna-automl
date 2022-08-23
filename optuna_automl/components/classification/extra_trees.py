@@ -80,4 +80,4 @@ params = [
     bootstrap
 ]
 
-Registry.add_component_to_registry(CLASSIFICATION, params, ExtraTreeClassifier)
+Registry.add_component_to_registry(CLASSIFICATION, params, ExtraTreesClassifier)
