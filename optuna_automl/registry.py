@@ -39,3 +39,5 @@ from optuna_automl.components.classification import random_forest
 
 from optuna_automl.components.data_preprocessing.imputation import simple_imputer
 from optuna_automl.components.data_preprocessing.encoding import count_encoder
+
+from optuna_automl.components.feature_preprocessing import select_percentile
