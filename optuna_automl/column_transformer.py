@@ -20,8 +20,6 @@ class ColumnTransformer(TransformerMixin):
 
         X_transformed = pd.concat(transformed_data, axis=1)
 
-        print(X_transformed)
-
         return X_transformed
 
     def set_trial_params(self, trial, name):
