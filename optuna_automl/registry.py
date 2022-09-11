@@ -41,5 +41,6 @@ from optuna_automl.components.classification import extra_trees
 from optuna_automl.components.data_preprocessing.imputation import simple_imputer
 from optuna_automl.components.data_preprocessing.encoding import count_encoder
 from optuna_automl.components.data_preprocessing.encoding import summary_encoder
+from optuna_automl.components.data_preprocessing.encoding import one_hot_encoder
 
 from optuna_automl.components.feature_preprocessing import select_percentile
