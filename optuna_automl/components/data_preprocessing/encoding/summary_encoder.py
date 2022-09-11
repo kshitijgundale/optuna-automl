@@ -1,0 +1,22 @@
+from category_encoders import SummaryEncoder as SE
+from optuna_automl.registry import Registry, CATEGORICAL_ENCODING
+import json
+
+class SummaryEncoder():
+
+    name = "summary_encoder"
+
+    def __init__(self):
+        self.preprocessor = None
+
+    def fit(self, X, y):
+        self.preprocessor = SE(handle_unknown='value', cols=X.columns)
+        self.preprocessor.fit(X, y)
+        return self
+
+    def transform(self, X):
+        with open("SE.json", "w") as f:
+            json.dump(self.preprocessor.transform(X).values.tolist(), f)
+        return self.preprocessor.transform(X)
+
+Registry.add_component_to_registry(CATEGORICAL_ENCODING, [], SummaryEncoder)
