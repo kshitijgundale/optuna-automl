@@ -15,8 +15,6 @@ class SummaryEncoder():
         return self
 
     def transform(self, X):
-        with open("SE.json", "w") as f:
-            json.dump(self.preprocessor.transform(X).values.tolist(), f)
         return self.preprocessor.transform(X)
 
 Registry.add_component_to_registry(CATEGORICAL_ENCODING, [], SummaryEncoder)
