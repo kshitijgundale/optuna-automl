@@ -15,6 +15,7 @@ class Registry():
         NUMERICAL_IMPUTATION: {},
         CATEGORICAL_IMPUTATION: {},
         TEXT_IMPUTATION: {},
+        TEXT_ENCODING: {},
         CATEGORICAL_ENCODING: {},
         FEATURE_PREPROCESSING: {}
     }
@@ -42,5 +43,6 @@ from optuna_automl.components.data_preprocessing.imputation import simple_impute
 from optuna_automl.components.data_preprocessing.encoding import count_encoder
 from optuna_automl.components.data_preprocessing.encoding import summary_encoder
 from optuna_automl.components.data_preprocessing.encoding import one_hot_encoder
+from optuna_automl.components.data_preprocessing.encoding import tfidf_vectorizer
 
 from optuna_automl.components.feature_preprocessing import select_percentile
