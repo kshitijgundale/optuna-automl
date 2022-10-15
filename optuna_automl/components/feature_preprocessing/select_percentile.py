@@ -23,7 +23,6 @@ class SelectPercentile():
             percentile = self.percentile
         )
         self.preprocessor.fit(X, y)
-        print(self.preprocessor.get_support())
         self.features_selected = X.columns[self.preprocessor.get_support()]
         return self
 
