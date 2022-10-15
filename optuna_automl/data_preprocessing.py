@@ -58,10 +58,11 @@ class DataPreprocessing():
             preprocessing_steps.append(('cat_preprocessing', ppl, col_types[DataPreprocessing.CATEGORICAL]))
 
         if col_types[DataPreprocessing.TEXT]:
-            preprocessing_steps.append(AutomlPipeline([
-                ('text_imputation', AutomlPreprocessingChoice(task_name=TEXT_IMPUTATION), col_types[DataPreprocessing.TEXT]),
-                ('text_encoding', AutomlPreprocessingChoice(task_name=TEXT_ENCODING), col_types[DataPreprocessing.TEXT])
-            ]))
+            ppl = AutomlPipeline([
+                ('text_imputation', AutomlPreprocessingChoice(task_name=TEXT_IMPUTATION)),
+                ('text_encoding', AutomlPreprocessingChoice(task_name=TEXT_ENCODING))
+            ])
+            preprocessing_steps.append(('text_preprocessing', ppl, col_types[DataPreprocessing.TEXT]))
 
         return ColumnTransformer(preprocessing_steps)
 
