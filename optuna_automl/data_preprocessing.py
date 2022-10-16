@@ -10,7 +10,6 @@ class DataPreprocessing():
     CATEGORICAL = "categorical"
     NUMERICAL = "numerical"
     TEXT = "text"
-    DATETIME = "datetime"
 
     def __init__(self, feat_types):
         self.feat_types = feat_types
@@ -23,7 +22,6 @@ class DataPreprocessing():
         col_types = {
             DataPreprocessing.CATEGORICAL: [],
             DataPreprocessing.NUMERICAL: [],
-            DataPreprocessing.DATETIME: [],
             DataPreprocessing.TEXT: []
         }
 
