@@ -1,11 +1,13 @@
 import pandas as pd
 from sklearn.base import TransformerMixin
-import json
+from optuna_automl.pipeline import AutomlPipeline
 
 class ColumnTransformer(TransformerMixin):
 
-    def __init__(self, transformers):
+    def __init__(self, transformers=[]):
         self.transformers = transformers
+
+        self.branches = {}
         
     def fit(self, X, y):
         for name, transformer, cols in self.transformers:
@@ -31,3 +33,24 @@ class ColumnTransformer(TransformerMixin):
         for step_name, transformer, _ in self.transformers:
             transformer.set_params(params, step_name)
         return self
+
+    def add_branch(self, name, cols):
+        self.transformers.append([
+            name,
+            AutomlPipeline(steps=[]),
+            cols
+        ])
+        self.branches[name] = len(self.transformers) - 1 
+        return self.branches.keys()
+
+    def add_branch_pipe(self, branch, name, task):
+        if branch not in self.branches:
+            raise Exception("Branch not added in ColumnTransformer. Use add_branch method to add a new branch.")
+
+        self.transformers[self.branches[branch]][1].add_pipe(f"{branch}/{name}", task)
+
+    def add_parent_prefix(self, prefix):
+        for i in range(len(self.transformers)):
+            self.transformers[i][0] = f"{prefix}/{self.transformers[i][0]}"
+
+            self.transformers[i][1].add_parent_prefix(prefix)
