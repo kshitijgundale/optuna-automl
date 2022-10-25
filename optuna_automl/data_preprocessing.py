@@ -41,28 +41,23 @@ class DataPreprocessing():
 
             col_types[col_type].append(col)
 
-        preprocessing_steps = []
+        ct = ColumnTransformer(transformers=[])
 
         if col_types[DataPreprocessing.NUMERICAL]:
-            preprocessing_steps.append(
-                ('num_imputation', AutomlPreprocessingChoice(task_name=NUMERICAL_IMPUTATION), col_types[DataPreprocessing.NUMERICAL])
-            )
+            ct.add_branch("numerical", col_types[DataPreprocessing.NUMERICAL])
+            ct.add_branch_pipe("numerical", "imputation", NUMERICAL_IMPUTATION)
 
         if col_types[DataPreprocessing.CATEGORICAL]:
-            ppl = AutomlPipeline([
-                ('cat_imputation', AutomlPreprocessingChoice(task_name=CATEGORICAL_IMPUTATION)),
-                ('cat_encoding', AutomlPreprocessingChoice(task_name=CATEGORICAL_ENCODING))
-            ])
-            preprocessing_steps.append(('cat_preprocessing', ppl, col_types[DataPreprocessing.CATEGORICAL]))
+            ct.add_branch("categorical", col_types[DataPreprocessing.CATEGORICAL])
+            ct.add_branch_pipe("categorical", "imputation", CATEGORICAL_IMPUTATION)
+            ct.add_branch_pipe("categorical", "encoding", CATEGORICAL_ENCODING)
 
         if col_types[DataPreprocessing.TEXT]:
-            ppl = AutomlPipeline([
-                ('text_imputation', AutomlPreprocessingChoice(task_name=TEXT_IMPUTATION)),
-                ('text_encoding', AutomlPreprocessingChoice(task_name=TEXT_ENCODING))
-            ])
-            preprocessing_steps.append(('text_preprocessing', ppl, col_types[DataPreprocessing.TEXT]))
-
-        return ColumnTransformer(preprocessing_steps)
+            ct.add_branch("text", col_types[DataPreprocessing.TEXT])
+            ct.add_branch_pipe("text", "imputation", TEXT_IMPUTATION)
+            ct.add_branch_pipe("text", "encoding", TEXT_ENCODING)
+            
+        return ct
 
     @staticmethod
     def infer_field_type(col):
