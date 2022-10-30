@@ -2,10 +2,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer as TV
 from optuna_automl.registry import Registry, TEXT_ENCODING
 from sklearn.base import TransformerMixin
 from optuna_automl.hyperparameters import CategoricalHyperparameter, IntegerHyperparameter
-import json
 import pandas as pd
+from optuna_automl.automl_component import AutomlComponent
 
-class TfidfVectorizer(TransformerMixin):
+class TfidfVectorizer(AutomlComponent, TransformerMixin):
 
     name = "tfidf_encoder"
 

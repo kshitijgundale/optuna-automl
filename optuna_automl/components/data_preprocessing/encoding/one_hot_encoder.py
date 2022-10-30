@@ -1,7 +1,8 @@
 from category_encoders.one_hot import OneHotEncoder as OHE
 from optuna_automl.registry import Registry, CATEGORICAL_ENCODING
+from optuna_automl.automl_component import AutomlComponent
 
-class OneHotEncoder():
+class OneHotEncoder(AutomlComponent):
 
     name = "one_hot_encoder"
 

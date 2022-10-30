@@ -2,8 +2,9 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.ensemble import ExtraTreesClassifier as ETC
 from optuna_automl.hyperparameters import IntegerHyperparameter, FloatHyperparameter, CategoricalHyperparameter, UnParametrizedHyperparameter
 from optuna_automl.registry import Registry, CLASSIFICATION
+from optuna_automl.automl_component import AutomlComponent
 
-class ExtraTreesClassifier(BaseEstimator, TransformerMixin):
+class ExtraTreesClassifier(AutomlComponent, BaseEstimator, TransformerMixin):
 
     name = "extra_trees_classifier"
 

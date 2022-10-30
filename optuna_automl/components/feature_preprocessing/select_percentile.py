@@ -2,8 +2,9 @@ from sklearn.feature_selection import chi2, f_classif, SelectPercentile as SP
 import pandas as pd
 from optuna_automl.hyperparameters import CategoricalHyperparameter, FloatHyperparameter
 from optuna_automl.registry import Registry, FEATURE_PREPROCESSING
+from optuna_automl.automl_component import AutomlComponent
 
-class SelectPercentile():
+class SelectPercentile(AutomlComponent):
 
     name = "select_percentile"
 

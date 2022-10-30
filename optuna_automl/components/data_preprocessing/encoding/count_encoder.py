@@ -2,8 +2,9 @@ from category_encoders import CountEncoder as CE
 from optuna_automl.registry import Registry, CATEGORICAL_ENCODING
 import json
 import pandas as pd
+from optuna_automl.automl_component import AutomlComponent
 
-class CountEncoder():
+class CountEncoder(AutomlComponent):
 
     name = "count_encoder"
 

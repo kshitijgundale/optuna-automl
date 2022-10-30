@@ -1,8 +1,8 @@
 from category_encoders import SummaryEncoder as SE
 from optuna_automl.registry import Registry, CATEGORICAL_ENCODING
-import json
+from optuna_automl.automl_component import AutomlComponent
 
-class SummaryEncoder():
+class SummaryEncoder(AutomlComponent):
 
     name = "summary_encoder"
 
