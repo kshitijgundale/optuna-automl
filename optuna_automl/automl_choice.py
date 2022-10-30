@@ -14,18 +14,14 @@ class AutomlChoice():
         avaliable_components = Registry.get_all_available_components(self.task_name)
         self.component = trial.suggest_categorical(f'{step_name}', avaliable_components)
 
-    def set_component_params(self, trial, step_name):
-        search_space = Registry.get_component_params(self.task_name, self.component)
-        params = {}
-        for param in search_space:
-            value = param.set_trial(trial, f'{step_name}__{param.name}')
-            params[param.name] = value
-
-        self.component = Registry.get_component_class(self.task_name, self.component)(**params)
+    def set_component_params(self, trial, step_name, ml_params):
+        self.component = Registry.get_component_class(self.task_name, self.component)
+        params = self.component.set_trial_params(trial, self.task_name, step_name, ml_params)
+        self.component = self.component(**params)
             
-    def set_trial_params(self, trial, step_name):
+    def set_trial_params(self, trial, step_name, ml_params):
         self.set_component(trial, step_name)
-        self.set_component_params(trial, step_name)
+        self.set_component_params(trial, step_name, ml_params)
         return self
 
     def set_params(self, params, step_name):
