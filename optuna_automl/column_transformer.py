@@ -24,9 +24,9 @@ class ColumnTransformer(TransformerMixin):
 
         return X_transformed
 
-    def set_trial_params(self, trial, name):
+    def set_trial_params(self, trial, name, ml_params):
         for step_name, transformer, _ in self.transformers:
-            transformer.set_trial_params(trial, step_name)
+            transformer.set_trial_params(trial, step_name, ml_params)
         return self
 
     def set_params(self, params, name):
