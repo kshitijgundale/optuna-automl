@@ -26,8 +26,17 @@ class CategoricalHyperparameter():
         self.name = name
         self.choices = choices
 
-    def set_trial(self, trial, name):
-        v = trial.suggest_categorical(name, self.choices)
+    def set_trial(self, trial, name, include=None, exclude=None):
+        if include and exclude:
+            raise Exception("Only one arguement from include and exclude can be provided.")
+        if include:
+            choices = include
+        elif exclude:
+            choices = set(self.choices) - set(exclude)
+        else:
+            choices = self.choices
+
+        v = trial.suggest_categorical(name, choices)
         return v
 
 class DiscreteHyperparameter():
