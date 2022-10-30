@@ -8,7 +8,9 @@ from optuna_automl.pipeline import AutomlPipeline
 class BasicPipeline(AutoML):
 
     def __init__(self, X, y, cv=5, ml_task="auto", feat_types=None):
-        
+
+        super().__init__(cv=cv)
+
         if ml_task == "auto":
             self.ml_task = self.get_ml_task(X, y)
         else:
@@ -17,10 +19,6 @@ class BasicPipeline(AutoML):
             else:
                 self.ml_task = ml_task
 
-        self._ppl = AutomlPipeline(steps=[])
-
         self._ppl.add_pipe('data_preprocessing', DataPreprocessing(feat_types).pipeline(X, y))
         self._ppl.add_pipe('feature_preprocessing', FEATURE_PREPROCESSING)
         self._ppl.add_pipe('estimator', self.ml_task)
-
-        self.cv = cv
