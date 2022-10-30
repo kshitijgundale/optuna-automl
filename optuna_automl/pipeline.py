@@ -6,9 +6,9 @@ import copy
 
 class AutomlPipeline(Pipeline):
 
-    def set_trial_params(self, trial, name):
+    def set_trial_params(self, trial, name, ml_params):
         for name, transformer in self.steps:
-            transformer.set_trial_params(trial, name)
+            transformer.set_trial_params(trial, name, ml_params)
         return self
 
     def set_params(self, params, name):
