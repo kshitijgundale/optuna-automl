@@ -46,3 +46,4 @@ from optuna_automl.components.data_preprocessing.encoding import one_hot_encoder
 from optuna_automl.components.data_preprocessing.encoding import tfidf_vectorizer
 
 from optuna_automl.components.feature_preprocessing import select_percentile
+from optuna_automl.components.feature_preprocessing import rfe
