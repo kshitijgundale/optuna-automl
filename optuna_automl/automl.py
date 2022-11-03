@@ -1,8 +1,10 @@
 from optuna_automl.pipeline import AutomlPipeline
 from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import LabelEncoder
 import optuna
 import copy
 import time
+import pandas as pd
 
 class AutoML():
 
@@ -14,24 +16,33 @@ class AutoML():
         self.ml_task = None
         self.ml_params = {}
     
-    def train(self, data, target, time_budget=10800):
+    def train(self, data: pd.DataFrame, target: str, time_budget: int = 10800):
+
+        ## Cleanup before fitting
+        self.best_params = None
+        self.ml_params = {}
+        self.time_taken = None
+
+        ## Check if pipeline is empty
         if not self.get_pipeline_steps():
             Exception("No components added to pipeline. Add components to pipeline using add_pipe or use available pipelines")
 
+        ## Prepare data
+        X, y = self._prepare_data(data, target)
+
         ## Create ml params
-        self.ml_task = self.ml_task or self.get_ml_task(data, target)
         self.ml_params['ml_task'] = self.ml_task
 
         ## Create optuna study
         study = optuna.create_study(direction="minimize")
         s = time.perf_counter()
-        study.optimize(lambda trial: self._objective_func(trial, data, target), timeout=time_budget)
+        study.optimize(lambda trial: self._objective_func(trial, X, y), timeout=time_budget)
         e = time.perf_counter()
         self.time_taken = e - s
 
         self.best_params = study.best_params
         self._ppl.set_params(self.best_params, "main")
-        self._ppl.fit(data, target)
+        self._ppl.fit(X, y)
 
     def _objective_func(self, trial, X, y):
         ppl = copy.deepcopy(self._ppl)
@@ -41,7 +52,7 @@ class AutoML():
         return 1 - accuracy    
 
     def predict(self, X):
-        pass
+        return self._label_encoder.inverse_transform(self._ppl.predict(X))
 
     def get_ml_task(self, X, y):
         return "classification"
@@ -51,4 +62,25 @@ class AutoML():
 
     def add_pipe(self, name, task):
         self._ppl.add_pipe(name, task)
+
+    def _prepare_data(self, data, target):
+        if not isinstance(data, pd.DataFrame):
+            raise Exception(f"Dataset of type {type(X)} is not supported. Please pass pandas dataframe.")
+
+        if not isinstance(target, str):
+            raise Exception(f"Target should be a string value, not {type(target)}")
+
+        if target not in data.columns:
+            raise Exception(f"Target column {target} does not exist in data.")
+
+        X = data.drop(target, axis=1)
+        y = data[target].values
+
+        self.ml_task = self.ml_task or self.get_ml_task(X, y)
+
+        if self.ml_task == "classification":
+            self._label_encoder = LabelEncoder()
+            y = self._label_encoder.fit_transform(y)
+
+        return X, y
         
