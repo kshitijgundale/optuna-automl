@@ -7,9 +7,11 @@ from optuna_automl.pipeline import AutomlPipeline
 
 class BasicPipeline(AutoML):
 
-    def __init__(self, X, y, cv=5, ml_task="auto", feat_types=None):
+    def __init__(self, data, target, cv=5, ml_task="auto", feat_types=None):
 
         super().__init__(cv=cv)
+
+        X, y = self._prepare_data(data, target)
 
         if ml_task == "auto":
             self.ml_task = self.get_ml_task(X, y)
