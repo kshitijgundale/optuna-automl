@@ -23,7 +23,7 @@ class TfidfVectorizer(AutomlComponent, TransformerMixin):
         data = self.preprocessor.transform(X.apply(lambda x : " ".join(x), axis=1)).toarray()
         return pd.DataFrame(data=data, columns=[f"text_{i}" for i in range(len(data[0]))])
 
-ngram_range = CategoricalHyperparameter("ngram_range", [(i,j) for i in range(1,5) for j in range(1,5) if i<=j])
+ngram_range = CategoricalHyperparameter("ngram_range", [(i,j) for i in range(1,3) for j in range(1,3) if i<=j])
 max_features = IntegerHyperparameter("max_features", 1, 100)
 Registry.add_component_to_registry(TEXT_ENCODING, [ngram_range, max_features], TfidfVectorizer)    
 
