@@ -5,6 +5,7 @@ import optuna
 import copy
 import time
 import pandas as pd
+import dill
 
 class AutoML():
 
@@ -16,7 +17,7 @@ class AutoML():
         self.ml_task = None
         self.ml_params = {}
     
-    def train(self, data: pd.DataFrame, target: str, time_budget: int = 10800):
+    def train(self, data, target, time_budget=10800):
 
         ## Cleanup before fitting
         self.best_params = None
@@ -62,11 +63,18 @@ class AutoML():
 
     def add_pipe(self, name, task):
         self._ppl.add_pipe(name, task)
+        return self
 
     def _prepare_data(self, data, target):
-        if not isinstance(data, pd.DataFrame):
-            raise Exception(f"Dataset of type {type(X)} is not supported. Please pass pandas dataframe.")
+        if not isinstance(data, pd.DataFrame) and not isinstance(data, str):
+            raise Exception(f"Dataset of type {type(X)} is not supported. Please pass pandas dataframe or path to csv/excel file.")
 
+        if isinstance(data, str):
+            try:
+                data = pd.read_excel(data)
+            except ValueError:
+                data = pd.read_csv(data)
+        
         if not isinstance(target, str):
             raise Exception(f"Target should be a string value, not {type(target)}")
 
@@ -84,3 +92,9 @@ class AutoML():
 
         return X, y
         
+    @staticmethod    
+    def load_model(path):
+        dill.load(open(path, "rb"))
+
+    def save_model(self, path):
+        dill.dump(self, open(path, "wb"))
