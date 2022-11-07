@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "optuna-automl"
+version = "0.0.1"
+authors = [
+  { name="Kshitij Gundale", email="kshitijgundale08@gmail.com" },
+]
+dependencies=[
+    "pandas",
+    "optuna",
+    "scikit-learn",
+    "category-encoders",
+    "dill"
+]
+description = "Automated machine learning with Optuna and Scikit-Learn"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/kshitijgundale/optuna-automl"
