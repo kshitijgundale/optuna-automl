@@ -24,6 +24,8 @@ colorama==0.4.4
     #   tqdm
 colorlog==6.6.0
     # via optuna
+dill==0.3.6
+    # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy
 importlib-metadata==4.11.4
