@@ -16,8 +16,11 @@ class AutoML():
         self._ppl = AutomlPipeline(steps=[])
         self.ml_task = None
         self.ml_params = {}
-    
-    def train(self, data, target, time_budget=10800):
+
+    def train(self, data, target, time_budget=10000):
+        self._fit(data, target, time_budget)
+
+    def _fit(self, data, target, time_budget=10800):
 
         ## Cleanup before fitting
         self.best_params = None
@@ -32,7 +35,7 @@ class AutoML():
         X, y = self._prepare_data(data, target)
 
         ## Create ml params
-        self.ml_params['ml_task'] = self.ml_task
+        self.ml_params['ml_task'] = self.ml_task or self.get_ml_task(X, y)
 
         ## Create optuna study
         study = optuna.create_study(direction="minimize")
