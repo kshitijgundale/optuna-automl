@@ -48,3 +48,8 @@ class AutomlEstimatorChoice(AutomlChoice):
 
     def predict_proba(self, X):
         return self.component.predict_proba(X)
+
+    def fit(self, X, y):
+        self.component.fit(X,y)
+        self.classes_ = self.component.estimator.classes_
+        return self
