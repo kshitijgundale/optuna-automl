@@ -1,6 +1,7 @@
 from optuna_automl.pipeline import AutomlPipeline
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import LabelEncoder
+from registry import Registry
 import optuna
 import copy
 import time
@@ -9,13 +10,20 @@ import dill
 
 class AutoML():
 
-    def __init__(self, cv=5):
+    def __init__(self, cv=5, metric="accuracy", scoring_functions=None):
         self.cv = cv
+        self.metric = metric
+        self.scoring_functions = scoring_functions
 
         self.best_params = None
         self._ppl = AutomlPipeline(steps=[])
         self.ml_task = None
         self.ml_params = {}
+        self.run_stats = {}
+
+        self._metric = self.metric
+        self._scoring_functions = []
+        self._scoring_functions.append(self._metric)
 
     def train(self, data, target, time_budget=10000):
         self._fit(data, target, time_budget)
@@ -45,15 +53,17 @@ class AutoML():
         self.time_taken = e - s
 
         self.best_params = study.best_params
+        self.best_score = self.run_stats[study.best_trial.number]['scores']
         self._ppl.set_params(self.best_params, "main")
         self._ppl.fit(X, y)
 
     def _objective_func(self, trial, X, y):
         ppl = copy.deepcopy(self._ppl)
         ppl.set_trial_params(trial, "main", self.ml_params)
-        score = cross_val_score(ppl, X, y, n_jobs=-1, cv=self.cv, scoring='accuracy', error_score="raise")
-        accuracy = score.mean()
-        return 1 - accuracy    
+        scores = cross_validate(estimator=ppl, X=X, y=y, n_jobs=-1, cv=self.cv, scoring=self._scoring_functions, error_score="raise")
+        self.run_stats[trial.number] = {"scores": {k:scores[k].mean() for k in scores}, "params": trial.params}
+        eval_score = scores[f'test_{self._metric}'].mean()
+        return -eval_score
 
     def predict(self, X):
         return self._label_encoder.inverse_transform(self._ppl.predict(X))
@@ -94,6 +104,12 @@ class AutoML():
             y = self._label_encoder.fit_transform(y)
 
         return X, y
+
+    def get_available_components(task):
+        try:
+            return Registry.registry[task].keys() 
+        except KeyError:
+            raise Exception(f"No task with name {task} found")
         
     @staticmethod    
     def load_model(path):
