@@ -73,7 +73,15 @@ class DataPreprocessing():
         str
         """
         if not isinstance(col, pd.Series):
-            raise TypeError(f"must be pandas Series, not {type(col)}")
+            raise TypeError(f"Input must be pandas Series, not {type(col)}")
         if len(col) == 0:
             raise Exception(f"empty input provided")
+        
+        if col.dtype == 'O':
+            r = len(col.unique())/len(col)
+            if r > 0.5:
+                return DataPreprocessing.TEXT
+            else:
+                return DataPreprocessing.CATEGORICAL
+
         return DataPreprocessing.NUMERICAL
