@@ -1,7 +1,7 @@
 from optuna_automl.pipeline import AutomlPipeline
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import LabelEncoder
-from registry import Registry
+from optuna_automl.registry import Registry
 import optuna
 import copy
 import time
@@ -105,9 +105,9 @@ class AutoML():
 
         return X, y
 
-    def get_available_components(task):
+    def get_available_components(self, task):
         try:
-            return Registry.registry[task].keys() 
+            return list(Registry.registry[task].keys())
         except KeyError:
             raise Exception(f"No task with name {task} found")
         
