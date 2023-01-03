@@ -54,6 +54,8 @@ class AutoML():
 
         self.best_params = study.best_params
         self.best_score = self.run_stats[study.best_trial.number]['scores']
+
+        # Fit final model with best params
         self._ppl.set_params(self.best_params, "main")
         self._ppl.fit(X, y)
 
